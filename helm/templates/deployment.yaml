@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-template
+  template:
+    metadata:
+      labels:
+        app: gateway-template
+    spec:
+      containers:
+        - name: gateway-container
+          image: '{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}'
+          ports:
+            - name: gateway
+              containerPort: {{ .Values.service.port }}
+          volumeMounts:
+            - name: nginx-configmap
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-configmap
+          configMap:
+            name: gateway-configmap
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: fe-template
+  template:
+    metadata:
+      labels:
+        app: fe-template
+    spec:
+      containers:
+        - name: fe-container
+          image: "{{ .Values.fe.image }}:{{ .Values.fe.imageVersion }}"
+          envFrom:
+          - configMapRef:
+              name: fe-configmap
+          ports:
+            - name: fe
+              containerPort: {{ .Values.fe.service.port }}
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: be-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: be-template
+  template:
+    metadata:
+      labels:
+        app: be-template
+    spec:
+      containers:
+        - name: be-container
+          image: "{{ .Values.be.image }}:{{ .Values.be.imageVersion }}"
+          envFrom:
+          - configMapRef:
+              name: be-configmap
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-provider-secret
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cloud-provider-secret
+                  key: aws_secret_access_key
+          ports:
+            - name: be
+              containerPort: {{ .Values.be.service.port }}
+      initContainers:
+      - name: check-db-ready
+        image: postgres:14.8-alpine3.18
+        env:
+            - name: POSTGRES_HOST
+              value: {{ include "postgresql.host" . | quote }}
+            - name: POSTGRES_PORT
+              value: "{{ .Values.postgresql.primary.service.port }}"
+        command: ['sh', '-c',
+          'echo Checking if postgres is up; until pg_isready -h $POSTGRES_HOST -p $POSTGRES_PORT;
+          do echo Waiting for postgres database to be up...; sleep 2; done; echo Postgres is up!']

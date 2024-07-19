@@ -1,0 +1,12 @@
+{{- if .Values.s3.enabled }}
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: {{ .Values.s3.bucket }}
+spec:
+  forProvider:
+    region: {{ .Values.s3.region }}
+    forceDestroy: true
+  providerConfigRef:
+    name: default
+{{- end }}

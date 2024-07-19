@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: gateway-template
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-service
+spec:
+  type: {{ .Values.fe.service.type }}
+  selector:
+    app: fe-template
+  ports:
+    - protocol: TCP
+      port: {{ .Values.fe.service.port }}
+      targetPort: {{ .Values.fe.service.targetPort }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: be-service
+spec:
+  type: {{ .Values.be.service.type }}
+  selector:
+    app: be-template
+  ports:
+    - protocol: TCP
+      port: {{ .Values.be.service.port }}
+      targetPort: {{ .Values.be.service.targetPort }}
+
+---

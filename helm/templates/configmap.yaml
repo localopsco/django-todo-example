@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: be-configmap
+data:
+  APP_VERSION: "{{ .Chart.AppVersion }}"
+  DB_HOST: {{ include "postgresql.host" . | quote }}
+  DB_PORT: "{{ .Values.postgresql.primary.service.port }}"
+  DB_NAME: "{{ .Values.postgresql.auth.database }}"
+  DB_USER: "{{ .Values.postgresql.auth.username }}"
+  DB_PASS: "{{ .Values.postgresql.auth.password }}"
+  S3_REGION: "{{ .Values.s3.region }}"
+  S3_BUCKET_NAME: "{{ .Values.s3.bucket }}"
+{{ toYaml .Values.be.env | indent 2 }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fe-configmap
+data:
+  PORT: "{{ .Values.fe.service.port }}"
+{{ toYaml .Values.fe.env | indent 2 }}
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-configmap
+data:
+  nginx.conf: |
+    events { }
+
+    http {
+      upstream frontend {
+        server fe-service:{{ .Values.fe.service.port }};
+      }
+
+      upstream backend {
+        server be-service:{{ .Values.be.service.port }};
+      }
+
+      server {
+        listen {{ .Values.service.port }};
+
+        location / {
+          proxy_pass http://frontend;
+        }
+
+        location /api/ {
+          # Adding trailing slash to satisfy Django
+          # Check if the request URI does not end with a slash
+          if ($request_uri !~* /$) {
+              # Add a trailing slash to the request URI
+              rewrite ^(.*)$ $1/ break;
+          }
+
+          proxy_pass http://backend;
+        }
+      }
+    }

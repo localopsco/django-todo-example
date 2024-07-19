@@ -1,0 +1,55 @@
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 3030
+  targetPort: 3030
+
+gateway:
+  service:
+    type: NodePort
+  image:
+    repository: nginx
+    tag: stable-alpine3.19
+
+fe:
+  service:
+    type: ClusterIP
+    port: 3050
+    targetPort: 3050
+  image: public.ecr.aws/r5p6q2u1/js-example-spa
+  imageVersion: v1.0.2
+  env:
+    # Environment variables can also be passed here
+    ENABLE_CAPTCHA: "false"
+    ALLOW_SIGNUP: "false"
+
+be:
+  service:
+    type: ClusterIP
+    port: 8000
+    targetPort: 8000
+  image: public.ecr.aws/r5p6q2u1/django-todo-be
+  imageVersion: 0.0.1
+  env:
+    # Environment variables can also be passed here
+    ENABLE_CAPTCHA: "false"
+    ALLOW_SIGNUP: "false"
+
+s3:
+  enabled: true
+  bucket: django-todo-example-attachments
+  region: ap-south-1
+
+# Postgres values
+postgresql:
+  auth:
+    username: todo_user
+    password: todo_pass
+    database: todo_db
+  primary:
+    service:
+      port: 5432
+    persistence:
+      enabled: true
+      size: 1Gi
