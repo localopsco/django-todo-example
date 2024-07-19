@@ -57,13 +57,6 @@ spec:
           ports:
             - name: fe
               containerPort: {{ .Values.fe.service.port }}
-          resources:
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "1000m"
 
 ---
 
