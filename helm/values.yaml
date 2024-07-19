@@ -6,8 +6,6 @@ service:
   targetPort: 3030
 
 gateway:
-  service:
-    type: NodePort
   image:
     repository: nginx
     tag: stable-alpine3.19
