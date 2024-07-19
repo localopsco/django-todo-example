@@ -23,6 +23,7 @@ version: 0.0.3
 # It is recommended to use it with quotes.
 appVersion: "0.0.3"
 
+# Chart Dependencies
 dependencies:
   - name: postgresql
     version: 11.9.13

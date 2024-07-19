@@ -1,3 +1,6 @@
+
+# S3 Bucket
+
 {{- if .Values.s3.enabled }}
 apiVersion: s3.aws.upbound.io/v1beta1
 kind: Bucket

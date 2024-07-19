@@ -1,3 +1,6 @@
+
+# Gateway Deployment
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,12 +32,14 @@ spec:
 
 ---
 
+# Frontend Deployment
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fe-deployment
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.fe.replicaCount }}
   selector:
     matchLabels:
       app: fe-template
@@ -62,12 +67,14 @@ spec:
 
 ---
 
+# Backend Deployment
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: be-deployment
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.be.replicaCount }}
   selector:
     matchLabels:
       app: be-template

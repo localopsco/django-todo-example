@@ -1,15 +1,16 @@
-replicaCount: 1
-
+# Entry service config
 service:
   type: ClusterIP
   port: 3030
   targetPort: 3030
 
+# Gateway config
 gateway:
   image:
     repository: nginx
     tag: stable-alpine3.19
 
+# Frontend config
 fe:
   service:
     type: ClusterIP
@@ -17,11 +18,13 @@ fe:
     targetPort: 3050
   image: public.ecr.aws/r5p6q2u1/js-example-spa
   imageVersion: v1.0.2
+  replicaCount: 1
   env:
     # Environment variables can also be passed here
     ENABLE_CAPTCHA: "false"
     ALLOW_SIGNUP: "false"
 
+# Backend config
 be:
   service:
     type: ClusterIP
@@ -29,17 +32,13 @@ be:
     targetPort: 8000
   image: public.ecr.aws/r5p6q2u1/django-todo-be
   imageVersion: 0.0.1
+  replicaCount: 1
   env:
     # Environment variables can also be passed here
     ENABLE_CAPTCHA: "false"
     ALLOW_SIGNUP: "false"
 
-s3:
-  enabled: true
-  bucket: django-todo-example-attachments
-  region: ap-south-1
-
-# Postgres values
+# DB - Postgres values
 postgresql:
   auth:
     username: todo_user
@@ -51,3 +50,9 @@ postgresql:
     persistence:
       enabled: true
       size: 1Gi
+
+# S3 config
+s3:
+  enabled: true
+  bucket: django-todo-example-attachments
+  region: ap-south-1
