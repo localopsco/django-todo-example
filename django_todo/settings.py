@@ -87,11 +87,15 @@ DATABASES = {
     }
 }
 
+APP_VERSION=os.getenv('APP_VERSION')
+
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-S3_REGION = os.getenv('S3_REGION')
-S3_BUCKET_NAME=os.getenv('S3_BUCKET_NAME')
-APP_VERSION=os.getenv('APP_VERSION')
+
+S3_ENABLED = os.getenv('S3_ENABLED') == "true"
+if S3_ENABLED:
+  S3_REGION = os.getenv('S3_REGION')
+  S3_BUCKET_NAME=os.getenv('S3_BUCKET_NAME')
 
 
 # Password validation

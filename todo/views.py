@@ -36,6 +36,11 @@ class TaskViewSet(viewsets.ModelViewSet):
         parser_classes=[MultiPartParser],
     )
     def attach(self, request, pk=None):
+        if not settings.S3_ENABLED:
+            return JsonResponse({
+                "message": "Attachments feature not enabled"
+            }, status=403)
+
         task = self.get_object()
         file = request.FILES["file"]
 
@@ -66,6 +71,11 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["delete"], url_path="attach")
     def delete_attachment(self, request, pk=None):
+        if not settings.S3_ENABLED:
+            return JsonResponse({
+                "message": "Attachments feature not enabled"
+            }, status=403)
+
         task = self.get_object()
         if not task.attachment_url:
             return Response(
@@ -104,11 +114,19 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 def meta_resp(request):
+    cloud_deps = []
+    attachment_supported = False
+
+    if settings.S3_ENABLED:
+        cloud_deps.append("AWS S3")
+        attachment_supported = True
+
     data = {
         "framework": "django",
         "version": settings.APP_VERSION,
         "stack": "Django, Postgres, Redis, React.JS",
-        "cloud_dependencies": "AWS S3",
+        "cloud_dependencies": ", ".join(cloud_deps),
+        "attachment_supported": attachment_supported,
     }
     return JsonResponse(data)
 

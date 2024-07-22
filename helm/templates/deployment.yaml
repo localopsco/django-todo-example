@@ -18,9 +18,12 @@ spec:
       containers:
         - name: gateway-container
           image: '{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}'
+          {{- if .Values.gateway.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
+          {{- end }}
           ports:
             - name: gateway
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.targetPort }}
           volumeMounts:
             - name: nginx-configmap
               mountPath: /etc/nginx/nginx.conf
@@ -50,13 +53,16 @@ spec:
     spec:
       containers:
         - name: fe-container
-          image: "{{ .Values.fe.image }}:{{ .Values.fe.imageVersion }}"
+          image: "{{ .Values.fe.image.repository }}:{{ .Values.fe.image.tag }}"
+          {{- if .Values.fe.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.fe.image.pullPolicy }}
+          {{- end }}
           envFrom:
           - configMapRef:
               name: fe-configmap
           ports:
             - name: fe
-              containerPort: {{ .Values.fe.service.port }}
+              containerPort: {{ .Values.fe.service.targetPort }}
 
 ---
 
@@ -78,7 +84,10 @@ spec:
     spec:
       containers:
         - name: be-container
-          image: "{{ .Values.be.image }}:{{ .Values.be.imageVersion }}"
+          image: "{{ .Values.be.image.repository }}:{{ .Values.be.image.tag }}"
+          {{- if .Values.be.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.be.image.pullPolicy }}
+          {{- end }}
           envFrom:
           - configMapRef:
               name: be-configmap
@@ -95,7 +104,7 @@ spec:
                   key: aws_secret_access_key
           ports:
             - name: be
-              containerPort: {{ .Values.be.service.port }}
+              containerPort: {{ .Values.be.service.targetPort }}
       initContainers:
       - name: check-db-ready
         image: postgres:14.8-alpine3.18

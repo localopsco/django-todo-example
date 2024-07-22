@@ -1,6 +1,6 @@
 # Entry service config
 service:
-  type: ClusterIP
+  type: NodePort
   port: 3030
   targetPort: 3030
 
@@ -16,8 +16,9 @@ fe:
     type: ClusterIP
     port: 3050
     targetPort: 3050
-  image: public.ecr.aws/r5p6q2u1/js-example-spa
-  imageVersion: v1.0.2
+  image:
+    repository: public.ecr.aws/r5p6q2u1/js-example-spa
+    tag: v1.0.2
   replicaCount: 1
   env:
     # Environment variables can also be passed here
@@ -30,8 +31,9 @@ be:
     type: ClusterIP
     port: 8000
     targetPort: 8000
-  image: public.ecr.aws/r5p6q2u1/django-todo-be
-  imageVersion: 0.0.1
+  image:
+    repository: public.ecr.aws/r5p6q2u1/django-todo-be
+    tag: 0.0.1
   replicaCount: 1
   env:
     # Environment variables can also be passed here
@@ -53,6 +55,6 @@ postgresql:
 
 # S3 config
 s3:
-  enabled: true
+  enabled: false
   bucket: django-todo-example-attachments
   region: ap-south-1

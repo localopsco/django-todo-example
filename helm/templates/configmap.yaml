@@ -12,8 +12,11 @@ data:
   DB_NAME: "{{ .Values.postgresql.auth.database }}"
   DB_USER: "{{ .Values.postgresql.auth.username }}"
   DB_PASS: "{{ .Values.postgresql.auth.password }}"
+  S3_ENABLED: "{{ .Values.s3.enabled }}"
+  {{- if .Values.s3.enabled }}
   S3_REGION: "{{ .Values.s3.region }}"
   S3_BUCKET_NAME: "{{ .Values.s3.bucket }}"
+  {{- end }}
 {{ toYaml .Values.be.env | indent 2 }}
 
 ---
@@ -50,7 +53,7 @@ data:
       }
 
       server {
-        listen {{ .Values.service.port }};
+        listen {{ .Values.service.targetPort }};
 
         location / {
           proxy_pass http://frontend;
