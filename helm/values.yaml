@@ -9,6 +9,7 @@ gateway:
   image:
     repository: nginx
     tag: stable-alpine3.19
+  replicaCount: 1
 
 # Frontend config
 fe:
@@ -18,7 +19,7 @@ fe:
     targetPort: 3050
   image:
     repository: public.ecr.aws/r5p6q2u1/js-example-spa
-    tag: v1.0.2
+    tag: v1.0.3
   replicaCount: 1
   env:
     # Environment variables can also be passed here

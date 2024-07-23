@@ -6,6 +6,7 @@ kind: ConfigMap
 metadata:
   name: be-configmap
 data:
+  PORT: "{{ .Values.be.service.targetPort }}"
   APP_VERSION: "{{ .Chart.AppVersion }}"
   DB_HOST: {{ include "postgresql.host" . | quote }}
   DB_PORT: "{{ .Values.postgresql.primary.service.port }}"
@@ -28,7 +29,7 @@ kind: ConfigMap
 metadata:
   name: fe-configmap
 data:
-  PORT: "{{ .Values.fe.service.port }}"
+  PORT: "{{ .Values.fe.service.targetPort }}"
 {{ toYaml .Values.fe.env | indent 2 }}
 
 ---

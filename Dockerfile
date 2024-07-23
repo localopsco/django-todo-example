@@ -4,6 +4,7 @@ FROM python:3.12-alpine
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PORT=8000
 
 # Create and set the working directory
 WORKDIR /app
@@ -36,7 +37,7 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 # Expose the port the app runs on
-EXPOSE 8000
+EXPOSE ${PORT}
 
 # Start the application
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver"]
