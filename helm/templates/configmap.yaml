@@ -1,39 +1,4 @@
 
-# Backend Configmap
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: be-configmap
-data:
-  PORT: "{{ .Values.be.service.targetPort }}"
-  APP_VERSION: "{{ .Chart.AppVersion }}"
-  DB_HOST: {{ include "postgresql.host" . | quote }}
-  DB_PORT: "{{ .Values.postgresql.primary.service.port }}"
-  DB_NAME: "{{ .Values.postgresql.auth.database }}"
-  DB_USER: "{{ .Values.postgresql.auth.username }}"
-  DB_PASS: "{{ .Values.postgresql.auth.password }}"
-  S3_ENABLED: "{{ .Values.s3.enabled }}"
-  {{- if .Values.s3.enabled }}
-  S3_REGION: "{{ .Values.s3.region }}"
-  S3_BUCKET_NAME: "{{ .Values.s3.bucket }}"
-  {{- end }}
-{{ toYaml .Values.be.env | indent 2 }}
-
----
-
-# Frontend Configmap
-
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fe-configmap
-data:
-  PORT: "{{ .Values.fe.service.targetPort }}"
-{{ toYaml .Values.fe.env | indent 2 }}
-
----
-
 # Gateway Configmap
 
 apiVersion: v1

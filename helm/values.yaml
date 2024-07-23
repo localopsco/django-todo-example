@@ -23,8 +23,10 @@ fe:
   replicaCount: 1
   env:
     # Environment variables can also be passed here
-    ENABLE_CAPTCHA: "false"
-    ALLOW_SIGNUP: "false"
+    - name: ENABLE_CAPTCHA
+      value: "false"
+    - name: ALLOW_SIGNUP
+      value: "false"
 
 # Backend config
 be:
@@ -38,8 +40,10 @@ be:
   replicaCount: 1
   env:
     # Environment variables can also be passed here
-    ENABLE_CAPTCHA: "false"
-    ALLOW_SIGNUP: "false"
+    - name: ENABLE_CAPTCHA
+      value: "false"
+    - name: ALLOW_SIGNUP
+      value: "false"
 
 # DB - Postgres values
 postgresql:
