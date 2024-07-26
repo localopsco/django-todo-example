@@ -97,6 +97,8 @@ if S3_ENABLED:
   S3_REGION = os.getenv('S3_REGION')
   S3_BUCKET_NAME=os.getenv('S3_BUCKET_NAME')
 
+LOPS_HELM_VALUES=os.getenv("LOPS_HELM_VALUES")
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

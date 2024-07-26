@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from .models import Task
 from .serializers import TaskSerializer
 import boto3
+import json
 from botocore.exceptions import NoCredentialsError
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
@@ -136,3 +137,15 @@ def health(request):
         "status": "ok",
     }
     return JsonResponse(data)
+
+def lops_helm_values(request):
+    lops_helm_values = {}
+    try:
+      lops_helm_values = json.loads(settings.LOPS_HELM_VALUES)
+      if lops_helm_values is None:
+        lops_helm_values = {}
+    except ValueError as e:
+      return Response(
+              {"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+          )
+    return JsonResponse(lops_helm_values, safe=False)

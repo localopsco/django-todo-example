@@ -112,6 +112,8 @@ spec:
             - name: S3_BUCKET_NAME
               value: "{{ .Values.s3.bucket }}"
             {{- end }}
+            - name: LOPS_HELM_VALUES
+              value: {{ .Values.localops | toJson | quote }}
 {{ toYaml .Values.be.env | indent 12 }}
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
