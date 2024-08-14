@@ -125,7 +125,7 @@ def meta_resp(request):
     data = {
         "framework": "django",
         "version": settings.APP_VERSION,
-        "stack": "Django, Postgres, Redis, React.JS",
+        "stack": "Django, Postgres, React.JS",
         "cloud_dependencies": ", ".join(cloud_deps),
         "attachment_supported": attachment_supported,
     }
