@@ -115,16 +115,6 @@ spec:
             - name: LOPS_HELM_VALUES
               value: {{ .Values.localops | toJson | quote }}
 {{ toYaml .Values.be.env | indent 12 }}
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: cloud-provider-secret
-                  key: aws_access_key_id
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: cloud-provider-secret
-                  key: aws_secret_access_key
           ports:
             - name: be
               containerPort: {{ .Values.be.service.targetPort }}
