@@ -48,6 +48,8 @@ spec:
       app: fe-template
   template:
     metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
       labels:
         app: fe-template
     spec:
@@ -80,6 +82,8 @@ spec:
       app: be-template
   template:
     metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
       labels:
         app: be-template
     spec:
