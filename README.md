@@ -65,6 +65,8 @@ helm install todo ./helm
 
 ### To push new helm version
 
+Note: Make sure to run `helm dependency update` inside helm directory before building the helm chart.
+
 ```shell
 make deploy-helm v=0.0.1
 ```

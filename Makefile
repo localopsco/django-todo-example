@@ -1,3 +1,12 @@
+# get value from args if private or public
+
+registry-url=public.ecr.aws/r5p6q2u1
+
+ecr-repo-name=django-todo-be
+helm-repo-name=django-todo-example-helm
+
+ecr-repo-url=${registry-url}/${ecr-repo-name}
+
 run:
 	DB_NAME=djangotodo \
 	DB_USER=localops \
@@ -24,15 +33,20 @@ test:
 	S3_BUCKET_NAME=test-bucket \
 	python manage.py test todo
 
-be-docker-push:
-	docker buildx build --platform linux/amd64 -t django-todo-be:latest -t django-todo-be:${v} .
-	docker tag django-todo-be:latest public.ecr.aws/r5p6q2u1/django-todo-be:latest
-	docker tag django-todo-be:${v} public.ecr.aws/r5p6q2u1/django-todo-be:${v}
-	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/r5p6q2u1
-	docker push public.ecr.aws/r5p6q2u1/django-todo-be:latest
-	docker push public.ecr.aws/r5p6q2u1/django-todo-be:${v}
+login:
+	aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin ${registry-url}
 
-deploy-helm:
+be-docker-push: login
+	docker buildx build --platform linux/amd64 -t ${ecr-repo-name}:latest -t ${ecr-repo-name}:${v} .
+	docker tag ${ecr-repo-name}:latest ${ecr-repo-url}:latest
+	docker tag ${ecr-repo-name}:${v} ${ecr-repo-url}:${v}
+	docker push ${ecr-repo-url}:latest
+	docker push ${ecr-repo-url}:${v}
+
+
+login-helm:
+	aws ecr get-login-password --region us-west-1 | helm registry login --username AWS --password-stdin ${registry-url}
+
+deploy-helm: login-helm
 	helm package helm -d helm/.tmp/
-	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/r5p6q2u1
-	helm push helm/.tmp/django-todo-example-helm-${v}.tgz oci://public.ecr.aws/r5p6q2u1/
+	helm push helm/.tmp/${helm-repo-name}-${v}.tgz oci://${registry-url}
