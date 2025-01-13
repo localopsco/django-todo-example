@@ -19,7 +19,7 @@ fe:
     targetPort: 3050
   image:
     repository: public.ecr.aws/r5p6q2u1/js-example-spa
-    tag: v1.0.3
+    tag: 1.0.4
   replicaCount: 1
   env:
     # Environment variables can also be passed here
@@ -36,7 +36,7 @@ be:
     targetPort: 8000
   image:
     repository: public.ecr.aws/r5p6q2u1/django-todo-be
-    tag: 0.0.1
+    tag: 0.0.2
   replicaCount: 1
   env:
     # Environment variables can also be passed here
