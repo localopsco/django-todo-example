@@ -4,6 +4,7 @@ registry-url=public.ecr.aws/r5p6q2u1
 
 ecr-repo-name=django-todo-be
 helm-repo-name=django-todo-example-helm
+aws-repo-region=us-east-1
 
 ecr-repo-url=${registry-url}/${ecr-repo-name}
 
@@ -34,7 +35,7 @@ test:
 	python manage.py test todo
 
 login:
-	aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin ${registry-url}
+	aws ecr-public get-login-password --region ${aws-repo-region} | docker login --username AWS --password-stdin ${registry-url}
 
 be-docker-push: login
 	docker buildx build --platform linux/amd64 -t ${ecr-repo-name}:latest -t ${ecr-repo-name}:${v} .
@@ -43,9 +44,8 @@ be-docker-push: login
 	docker push ${ecr-repo-url}:latest
 	docker push ${ecr-repo-url}:${v}
 
-
 login-helm:
-	aws ecr get-login-password --region us-west-1 | helm registry login --username AWS --password-stdin ${registry-url}
+	aws ecr-public get-login-password --region ${aws-repo-region} | helm registry login --username AWS --password-stdin ${registry-url}
 
 deploy-helm: login-helm
 	helm package helm -d helm/.tmp/
