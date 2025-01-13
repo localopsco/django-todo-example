@@ -38,11 +38,9 @@ login:
 	aws ecr-public get-login-password --region ${aws-repo-region} | docker login --username AWS --password-stdin ${registry-url}
 
 be-docker-push: login
-	docker buildx build --platform linux/amd64 -t ${ecr-repo-name}:latest -t ${ecr-repo-name}:${v} .
-	docker tag ${ecr-repo-name}:latest ${ecr-repo-url}:latest
-	docker tag ${ecr-repo-name}:${v} ${ecr-repo-url}:${v}
-	docker push ${ecr-repo-url}:latest
-	docker push ${ecr-repo-url}:${v}
+	docker buildx build --push --provenance=false --platform linux/amd64,linux/arm64 \
+		-t ${ecr-repo-url}:${v} \
+		-t ${ecr-repo-url}:latest .
 
 login-helm:
 	aws ecr-public get-login-password --region ${aws-repo-region} | helm registry login --username AWS --password-stdin ${registry-url}
