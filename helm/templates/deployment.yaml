@@ -18,9 +18,6 @@ spec:
       containers:
         - name: gateway-container
           image: '{{ .Values.gateway.image.repository }}:{{ .Values.gateway.image.tag }}'
-          {{- if .Values.gateway.image.pullPolicy }}
-          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
-          {{- end }}
           ports:
             - name: gateway
               containerPort: {{ .Values.service.targetPort }}
@@ -56,9 +53,6 @@ spec:
       containers:
         - name: fe-container
           image: "{{ .Values.fe.image.repository }}:{{ .Values.fe.image.tag }}"
-          {{- if .Values.fe.image.pullPolicy }}
-          imagePullPolicy: {{ .Values.fe.image.pullPolicy }}
-          {{- end }}
           env:
             - name: PORT
               value: "{{ .Values.fe.service.targetPort }}"
@@ -90,9 +84,6 @@ spec:
       containers:
         - name: be-container
           image: "{{ .Values.be.image.repository }}:{{ .Values.be.image.tag }}"
-          {{- if .Values.be.image.pullPolicy }}
-          imagePullPolicy: {{ .Values.be.image.pullPolicy }}
-          {{- end }}
           env:
             - name: PORT
               value: "{{ .Values.be.service.targetPort }}"
